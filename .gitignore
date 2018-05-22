@@ -1,0 +1,11 @@
+# out-of-source build
+build/
+
+# temporary files
+*~
+*.swp
+
+# gtags
+GTAGS
+GRTAGS
+GRAPTH
