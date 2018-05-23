@@ -40,7 +40,7 @@ ConfReader::readConf(int argc, const char* const argv[])
         ("version,V", "print version string")
         ("config,c", po::value<string>(),
            "specify configuration file")
-        ("proxy-type,p", po::value<string>(),
+        ("proxy,p", po::value<string>(),
            "ss, ssr, or v2ray")
         ("ping-protocol,P", po::value<string>()->default_value("http"),
            "icmp, tcp, or http")
@@ -48,6 +48,9 @@ ConfReader::readConf(int argc, const char* const argv[])
            "path/to/proxy.exec")
         ("num-threads,T", po::value<int>()->default_value(12),
            "nthreads")
+        ("export-subscr-nodes,D"
+           , po::value<string>()->implicit_value("./subscr-nodes")
+           , "whether and where to export susbscription nodes")
         ("output-format,F", po::value<string>(),
            "// TODO")
         ("subscr-type,t", po::value<string>(),
@@ -88,7 +91,7 @@ ConfReader::readConf(int argc, const char* const argv[])
     /*  3. print help OR check required options */
 
     const std::function<void()>& print_help = [&argv, &visible]() {
-        cout << "Usage: " << argv[0] << " [options] subscription-addr..."
+        cout << "Usage: " << argv[0] << " [options] subscr-addr..."
              << "\n";
         cout << "\n" << visible << "\n";
     };
@@ -104,14 +107,14 @@ ConfReader::readConf(int argc, const char* const argv[])
     }
 
     // Required options
-    if (!options.count("proxy") || options.count("subscr-type")) {
+    if (!options.count("proxy") || !options.count("subscr-type")) {
         print_help();
         throw std::invalid_argument(
             "`--proxy, --subscr-type' options are required");
     }
     if (!options.count("subscr-addr")) {
         print_help();
-        throw std::invalid_argument(" at least one subscr-addr is required");
+        throw std::invalid_argument("at least one `subscr-addr' is required");
     }
 
     /*  4. react to options */
