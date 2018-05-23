@@ -9,6 +9,7 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <list>
 #include <vector>
 
 #include "Conf.hh"
@@ -19,6 +20,7 @@
 #include "SubscrParser.hh"
 
 using std::cout;
+using std::list;
 using std::vector;
 using std::string;
 
@@ -31,8 +33,8 @@ ProxyBench::init(int argc, char** argv)
 void
 ProxyBench::run()
 {
-    vector<ProxyProfile> proxy_profiles;
-    vector<PingResult> ping_results;
+    list<ProxyProfile> proxy_profiles;
+    list<PingResult> ping_results;
 
     Conf* conf = Conf::get();
 

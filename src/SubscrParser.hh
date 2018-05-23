@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <string>
-#include <vector>
+#include <list>
 
 #include "Proxy.hh"
 
@@ -18,7 +18,7 @@ class SubscrParser
 {
 public:
     virtual void parse(const std::string& subscr_addr,
-                       std::vector<ProxyProfile>* profiles) = 0;
+                       std::list<ProxyProfile>* profiles) = 0;
 
 protected:
     SubscrParser() = default;
