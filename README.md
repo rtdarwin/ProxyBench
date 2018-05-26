@@ -10,13 +10,12 @@ Inspired by
 
 ## TODO
 
-- [ ] V2Ray support
 - [ ] ICMP/TCP ping
 - [ ] Benchmark output format customization
 
 ## Features
 
-- Support `SS` `SSR` proxy
+- Support `SS` `SSR` `V2Ray` proxy
 - Support `SS Surge` `SSR Url` subscription
 - `HTTP` protocol to benchmark
 
@@ -136,13 +135,12 @@ Inspired by, 好吧，从
 
 ## 挖坑
 
-- [ ] V2Ray 支持
 - [ ] ICMP/TCP ping
 - [ ] 输出格式可调
 
 ## 都抄了哪些功能
 
-- 支持 `SS` `SSR` 两种代理类型
+- 支持 `SS` `SSR` `V2Ray` 三种代理类型
 - 支持 `SS Surge` `SSR Url` 两种订阅类型
 - 支持 `HTTP` 跑分
 
