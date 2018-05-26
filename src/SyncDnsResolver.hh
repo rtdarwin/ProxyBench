@@ -9,5 +9,5 @@ class SyncDnsResolver : public Singleton<SyncDnsResolver>
     friend class Singleton<SyncDnsResolver>;
 
 public:
-    std::string resolve(const std::string& domain);
+    std::string resolve(const std::string& host);
 };

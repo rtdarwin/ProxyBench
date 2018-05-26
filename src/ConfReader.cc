@@ -38,23 +38,31 @@ ConfReader::readConf(int argc, const char* const argv[])
     visible.add_options()
         ("help,h", "show this help")
         ("version,V", "print version string")
-        ("config,c", po::value<string>(),
-           "specify configuration file")
-        ("proxy,p", po::value<string>(),
-           "ss, ssr, or v2ray")
-        ("ping-protocol,P", po::value<string>()->default_value("http"),
-           "icmp, tcp, or http")
-        ("exec,e", po::value<string>(),
-           "path/to/proxy.exec")
-        ("num-threads,T", po::value<int>()->default_value(12),
-           "nthreads")
-        ("export-subscr-nodes,D"
-           , po::value<string>()->implicit_value("./subscr-nodes")
+        ("config,c", po::value<string>()
+           , "specify configuration file")
+        ("proxy,p", po::value<string>()
+           , "ss, ssr, or v2ray")
+        ("exec,e", po::value<string>()
+           , "path/to/proxy.exec")
+        ("subscr-type,t", po::value<string>()
+           , "ss-surge, ssr-url, or v2ray-vmess-file")
+        ("ping-protocol,P", po::value<vector<string>>()
+                                ->composing()->multitoken()
+                                ->default_value(
+                                    vector<string>{"icmp", "http"}
+                                    , "icmp http")
+           , "icmp, tcp, and http")
+        ("nping,n", po::value<int>()->default_value(8)
+           , "number of pings each protocol")
+        ("sort-by,S", po::value<string>()->default_value("http")
+           , "icmp, tcp, http, or name")
+        ("num-threads,T", po::value<int>()->default_value(12)
+           , "nthreads")
+        ("export,D"
+           , po::value<string>()
            , "whether and where to export susbscription nodes")
-        ("output-format,F", po::value<string>(),
-           "// TODO")
-        ("subscr-type,t", po::value<string>(),
-           "ss-surge, ssr-url, or v2ray-vmess-file");
+        ("output-format,F", po::value<string>()
+           , "// TODO")
         ;
 
     hidden.add_options()("subscr-addr", po::value<vector<string>>());
@@ -140,28 +148,6 @@ ConfReader::readConf(int argc, const char* const argv[])
         conf->exec = options["exec"].as<string>();
     }
     //
-    if (options.count("protocol")) {
-        const string& proto = options["protocol"].as<string>();
-
-        if (0 == strcasecmp(proto.c_str(), "icmp")) {
-            conf->protocol = PingProtocol::ICMP;
-        } else if (0 == strcasecmp(proto.c_str(), "tcp")) {
-            conf->protocol = PingProtocol::TCP;
-        } else if (0 == strcasecmp(proto.c_str(), "http")) {
-            conf->protocol = PingProtocol::HTTP;
-        } else {
-            throw std::invalid_argument("Invalid `--protocol` option");
-        }
-    }
-    //
-    if (options.count("num-threads")) {
-        conf->nthreads = options["num-threads"].as<int>();
-    }
-    //
-    if (options.count("output-format")) {
-        conf->output_format = options["output-format"].as<string>();
-    }
-    //
     if (options.count("subscr-type")) {
         const string& subscr = options["subscr-type"].as<string>();
 
@@ -174,6 +160,42 @@ ConfReader::readConf(int argc, const char* const argv[])
         } else {
             throw std::invalid_argument("Invalid `--subscr-type` option");
         }
+    }
+    //
+    if (options.count("ping-protocol")) {
+        const auto& protos = options["ping-protocol"].as<vector<string>>();
+
+        for (const auto& proto : protos) {
+            if (0 == strcasecmp(proto.c_str(), "icmp")) {
+                conf->protocols.push_back(PingProtocol::ICMP);
+            } else if (0 == strcasecmp(proto.c_str(), "tcp")) {
+                conf->protocols.push_back(PingProtocol::TCP);
+            } else if (0 == strcasecmp(proto.c_str(), "http")) {
+                conf->protocols.push_back(PingProtocol::HTTP);
+            } else {
+                throw std::invalid_argument("Invalid `--protocol` option");
+            }
+        }
+    }
+    //
+    if (options.count("nping")) {
+        conf->nping = options["nping"].as<int>();
+    }
+    //
+    if (options.count("sort-by")) {
+        conf->sort_by = options["sort-by"].as<string>();
+    }
+    //
+    if (options.count("num-threads")) {
+        conf->nthreads = options["num-threads"].as<int>();
+    }
+    //
+    if (options.count("export")) {
+        conf->export_dir = options["export"].as<string>();
+    }
+    //
+    if (options.count("output-format")) {
+        conf->output_format = options["output-format"].as<string>();
     }
     //
     if (options.count("subscr-addr")) {

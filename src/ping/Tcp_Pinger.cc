@@ -1,7 +1,13 @@
 #include "ping/Tcp_Pinger.hh"
 
-PingResult
-Tcp_Pinger::wait_ping(struct sockaddr_in proxyAddr)
+bool
+Tcp_Pinger::require_proxy()
+{
+    return false;
+}
+
+void
+Tcp_Pinger::wait_ping(PingResult* result)
 {
     // TODO
 }

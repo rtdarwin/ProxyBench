@@ -1,5 +1,8 @@
 #include "Proxy.hh"
 
+#include <signal.h>
+#include <wait.h>
+
 #include "proxy/SSR_Proxy.hh"
 #include "proxy/SS_Proxy.hh"
 #include "proxy/V2Ray_Proxy.hh"
@@ -7,10 +10,13 @@
 using std::shared_ptr;
 using std::make_shared;
 
-sockaddr_in
-Proxy::addr()
+void
+Proxy::stop()
 {
-    // TODO
+    // sure kill
+    ::kill(_proxy_pid, SIGKILL);
+    // avoid zombie process memory usage
+    ::waitpid(_proxy_pid, NULL, 0);
 }
 
 shared_ptr<Proxy>

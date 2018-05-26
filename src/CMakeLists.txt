@@ -2,6 +2,7 @@ set(ProxyBench_SRCS
   main.cc
 
   ConfReader.cc
+  HttpClient.cc
   PingResultFormatter.cc
   ProxyBench.cc
   SyncDnsResolver.cc
@@ -26,4 +27,6 @@ add_executable(proxy-bench "${ProxyBench_SRCS}")
 
 target_link_libraries(proxy-bench
   Boost::program_options
+  curl
+  ev
   )

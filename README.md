@@ -8,13 +8,21 @@ protocols~
 Inspired by
 [ShadowsocksBenchmark](https://github.com/Kr328/ShadowsocksBenchmark).
 
+## TODO
+
+- [ ] V2Ray support
+- [ ] ICMP/TCP ping
+- [ ] Benchmark output format customization
+
 ## Features
 
-- Support `SS` `SSR` `V2Ray` three proxy types
-- Support `SS Surge` `SSR Url` `V2Ray Vmess File` three subscription types
-- Support `ICMP` `TCP` `HTTP` three protocols to benchmark
+- Support `SS` `SSR` proxy
+- Support `SS Surge` `SSR Url` subscription
+- `HTTP` protocol to benchmark
 
 ## Design & Work flow
+
+// TODO
 
 ## Build
 
@@ -32,22 +40,25 @@ ProxyBench will print the following help message when running with
 Usage: proxy-bench [options] subscr-addr...
 
 Generic Options:
-  -h [ --help ]                      show this help
-  -V [ --version ]                   print version string
-  -c [ --config ] arg                specify configuration file
-  -p [ --proxy-type ] arg            ss, ssr, or v2ray
-  -P [ --ping-protocol ] arg (=http) icmp, tcp, or http
-  -e [ --exec ] arg                  path/to/proxy.exec
-  -T [ --num-threads ] arg (=12)     nthreads
-  -D [ --export-subscr-nodes ] [=arg(=./subscr-nodes)]
-                                     whether and where to export susbscription nodes
-  -F [ --output-format ] arg         // TODO
-  -t [ --subscr-type ] arg           ss-surge, ssr-url, or v2ray-vmess-file
+  -h [ --help ]                         show this help
+  -V [ --version ]                      print version string
+  -c [ --config ] arg                   specify configuration file
+  -p [ --proxy ] arg                    ss, ssr, or v2ray
+  -e [ --exec ] arg                     path/to/proxy.exec
+  -t [ --subscr-type ] arg              ss-surge, ssr-url, or v2ray-vmess-file
+  -P [ --ping-protocol ] arg (=icmp http)
+                                        icmp, tcp, and http
+  -n [ --nping ] arg (=8)               number of pings each protocol
+  -S [ --sort-by ] arg (=http)          icmp, tcp, http, or name
+  -T [ --num-threads ] arg (=12)        nthreads
+  -D [ --export ] arg                   whether and where to export
+                                        susbscription nodes
+  -F [ --output-format ] arg            // TODO
 ```
 
 `--proxy-type` `--sbuscr-type` and `sbuscr-addr` options are necessary.
 
-Notice:
+Note that:
 
 1. **option values are case-insensitive**
 
@@ -63,15 +74,20 @@ Notice:
     For example:
 
     ```
-    proxy-type = ssr
+    proxy = ssr
+    exec = /usr/local/bin/ssr-local
+    ping-protocol = icmp
     ping-protocol = http
+    sort-by = http
+    num-threads = 16
+    export = /tmp/cc.conf.d
     subscr-type = ssr-url
-    subscr-addr = https://example.com/link/H89sdK1kaqicnHQsd4klsasd
+    subscr-addr = https://www.cc.me/link/your-link-here?mu=0
     ```
 
     Present `sbuscr-addr` **as a normal options**, just like the above
     example (That's how Boost.Program_Options works).
-    
+
 1. **specify the path of proxy exec if it's not in PATH**
 
     the execs of proxy are not always in the standard location ($PATH)
@@ -84,21 +100,28 @@ Notice:
 
 1. **export subscription nodes if you need**
 
-    WIP
+    use `--export' option to specify the directory to export
+    subscription nodes.
 
 ## Examples
 
-Benchmark SSR nodes:
+Benchmark SS nodes，sort by http delay:
 
 ```
-$ proxy-bench  -p ssr  -P http  -t ssr-rul  https://cordcl.me/link/mylinkkkkkkkk
+$ proxy-bench  -p ss  -P icmp http  -S http  -t ss-surge  https://www.cc.me/link/your-link-here?is_ss=0
 ```
 
-Benchmark V2Ray nodes:
+Benchmark SSR nodes, all options in config file `cc.me-ssr-url.cfg':
+
+```
+$ proxy-bench  -c cc.me-ssr-url.cfg
+```
+
+Benchmark V2Ray nodes, sort by TCP delay:
 
 ```
 $ <Firstly, append all vmess:// protocol links to file ./subscr.file, each with LF(\n) line ending>
-$ proxy-bench  -p v2ray  -P http  -t v2ray-vmess-file  ./subscr.file
+$ proxy-bench  -p v2ray  -P tcp http  -S tcp  -t v2ray-vmess-file  ./subscr.file
 ```
 
 # ProxyBench
@@ -111,13 +134,21 @@ Inspired by, 好吧，从
 [ShadowsocksBenchmark](https://github.com/Kr328/ShadowsocksBenchmark)
 抄了很多代码和设计理念，然后瞎几把改了改（反正大家都是 GPL
 
-## 从其他项目里抄了哪些功能
+## 挖坑
 
-- 支持 `SS` `SSR` `V2Ray` 三种代理类型
-- 支持 `SS Surge` `SSR Url` `V2Ray Vmess File` 三种订阅类型
-- 支持 `ICMP` `TCP` `HTTP` 三种跑分
+- [ ] V2Ray 支持
+- [ ] ICMP/TCP ping
+- [ ] 输出格式可调
+
+## 都抄了哪些功能
+
+- 支持 `SS` `SSR` 两种代理类型
+- 支持 `SS Surge` `SSR Url` 两种订阅类型
+- 支持 `HTTP` 跑分
 
 ## 我是怎么瞎几把设计的
+
+// TODO
 
 ## 编译
 
@@ -134,17 +165,20 @@ mkdir build && cd build && cmake .. && make
 Usage: proxy-bench [options] subscription-addr...
 
 Generic Options:
-  -h [ --help ]                      show this help
-  -V [ --version ]                   print version string
-  -c [ --config ] arg                specify configuration file
-  -p [ --proxy-type ] arg            ss, ssr, or v2ray
-  -P [ --ping-protocol ] arg (=http) icmp, tcp, or http
-  -e [ --exec ] arg                  path/to/proxy.exec
-  -T [ --num-threads ] arg (=12)     nthreads
-  -D [ --export-subscr-nodes ] [=arg(=./subscr-nodes)]
-                                     whether and where to export susbscription nodes
-  -F [ --output-format ] arg         // TODO
-  -t [ --subscr-type ] arg           ss-surge, ssr-url, or v2ray-vmess-file
+  -h [ --help ]                         show this help
+  -V [ --version ]                      print version string
+  -c [ --config ] arg                   specify configuration file
+  -p [ --proxy ] arg                    ss, ssr, or v2ray
+  -e [ --exec ] arg                     path/to/proxy.exec
+  -t [ --subscr-type ] arg              ss-surge, ssr-url, or v2ray-vmess-file
+  -P [ --ping-protocol ] arg (=icmp http)
+                                        icmp, tcp, and http
+  -n [ --nping ] arg (=8)               number of pings each protocol
+  -S [ --sort-by ] arg (=http)          icmp, tcp, http, or name
+  -T [ --num-threads ] arg (=12)        nthreads
+  -D [ --export ] arg                   whether and where to export
+                                        susbscription nodes
+  -F [ --output-format ] arg            // TODO
 ```
 
 其中 `--proxy-type` `--subscr-type` 选项和最后的订阅地址
@@ -164,39 +198,53 @@ Generic Options:
     比如：
 
     ```
-    proxy-type = ssr
+    proxy = ssr
+    exec = /usr/local/bin/ssr-local
+    ping-protocol = icmp
     ping-protocol = http
+    sort-by = http
+    num-threads = 16
+    export = /tmp/cc.conf.d
     subscr-type = ssr-url
-    subscr-addr = https://example.com/link/H89sdK1kaqicnHQsd4klsasd
+    subscr-addr = https://www.cc.me/link/your-link-here?mu=0
     ```
 
     唯一要注意的一点就是订阅地址要使用 `subscr-addr` 来指定，其他与命
     令行长参数一致。
+
+    `/examples' 目录中放置了一些可以用来更改的模板。
 
 1. **可自己指定代理可执行文件的位置**
 
     如果你的代理程序不在 `$PATH` 中，可以使用 `--exec` 选项指定。比如
     `--exec my/own/path/v2ray`。
 
-1. **输出格式可调** 
-
-    Hmmm，这个我还没想好怎么做，先挖个坑。
-
-1. **可导出订阅节点**
+1. **输出格式可调**
 
     Hmmm，先挖个坑。
 
+1. **可导出订阅节点**
+
+    用 `--export' 参数来指定导出目录。
+
 ## 使用示例
 
-SSR 节点跑分：
+SS 节点跑分，以 HTTP 延迟为基准排序：
 
 ```
-$ proxy-bench  -p ssr  -P http  -t ssr-rul  https://cordcl.me/link/mylinkkkkkkkk
+$ proxy-bench  -p ss  -P icmp http  -S http  -t ss-surge  https://www.cc.me/link/your-link-here?is_ss=0
 ```
 
-V2Ray 节点跑分：
+
+SSR 节点跑分，使用配置文件 cc.me-ssr-url.cfg
+
+```
+$ proxy-bench  -c cc.me-ssr-url.cfg
+```
+
+V2Ray 节点跑分，以 TCP 延迟为基准排序：
 
 ```
 $ <先把所有 vmess:// 链接放入文件 ./subscr.file 中，每个链接用 LF(\n) 结尾>
-$ proxy-bench  -p v2ray  -P http  -t v2ray-vmess-file  ./subscr.file
+$ proxy-bench  -p v2ray  -P tcp http  -S tcp  -t v2ray-vmess-file  ./subscr.file
 ```

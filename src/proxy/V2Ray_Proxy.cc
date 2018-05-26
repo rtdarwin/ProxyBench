@@ -12,7 +12,7 @@ V2Ray_Proxy::wait_start()
 }
 
 void
-V2Ray_Proxy::stop()
+V2Ray_Proxy::dump_config_file(const std::string& dir)
 {
     // TODO
 }

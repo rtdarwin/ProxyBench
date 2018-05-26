@@ -18,9 +18,17 @@ endif()
 
 set(CMAKE_CXX_STANDARD 11)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+    -Wall -Wextra \
+    -pthread")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb")
+    # -ggdb \
+    # -fsanitize=address \
+    # -fno-omit-frame-pointer \
+    # -fno-optimize-sibling-calls \
+    # -fno-common")
 
+include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(src)
 
@@ -52,6 +60,6 @@ configure_file(
   )
 
 ############################################################
-# Subdirectories
+# CMake Subdirectories
 
 add_subdirectory(src)

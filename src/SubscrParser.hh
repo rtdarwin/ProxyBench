@@ -1,8 +1,8 @@
 #pragma once
 
+#include <list>
 #include <memory>
 #include <string>
-#include <list>
 
 #include "Proxy.hh"
 
@@ -17,6 +17,8 @@ enum class SubscrType
 class SubscrParser
 {
 public:
+    virtual ~SubscrParser() = default;
+
     virtual void parse(const std::string& subscr_addr,
                        std::list<ProxyProfile>* profiles) = 0;
 

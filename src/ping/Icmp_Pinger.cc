@@ -1,7 +1,13 @@
 #include "ping/Icmp_Pinger.hh"
 
-PingResult
-Icmp_Pinger::wait_ping(struct sockaddr_in proxyAddr)
+bool
+Icmp_Pinger::require_proxy()
+{
+    return false;
+}
+
+void
+Icmp_Pinger::wait_ping(PingResult* result)
 {
     // TODO
 }

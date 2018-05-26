@@ -7,10 +7,22 @@
 using std::shared_ptr;
 using std::make_shared;
 
+bool
+Pinger::require_proxy()
+{
+    return false;
+}
+
+Pinger&
+Pinger::socks5_proxy(const std::string& proxy_addr)
+{
+    _socks5_proxy = proxy_addr;
+    return *this;
+}
+
 shared_ptr<Pinger>
 Pingers::NewPinger(PingProtocol proto)
 {
-
     shared_ptr<Pinger> pinger;
 
     switch (proto) {

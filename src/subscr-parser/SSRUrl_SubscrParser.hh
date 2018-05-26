@@ -8,5 +8,5 @@ public:
     SSRUrl_SubscrParser() = default;
 
     virtual void parse(const std::string& subscr_addr,
-                       std::vector<ProxyProfile>* profiles) override;
+                       std::list<ProxyProfile>* profiles) override;
 };

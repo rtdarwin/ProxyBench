@@ -1,5 +1,7 @@
 # out-of-source build
 build/
+build.debug/
+build.release/
 
 # temporary files
 *~

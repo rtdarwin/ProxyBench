@@ -1,10 +1,14 @@
 #pragma once
 
+#include <string>
+
 #include "Pinging.hh"
 
 class Http_Pinger : public Pinger
 {
 public:
     Http_Pinger() = default;
-    virtual PingResult wait_ping(struct sockaddr_in proxyAddr) override;
+
+    virtual bool require_proxy() override;
+    virtual void wait_ping(PingResult*) override;
 };
