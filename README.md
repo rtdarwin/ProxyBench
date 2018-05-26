@@ -16,7 +16,7 @@ Inspired by
 ## Features
 
 - Support `SS` `SSR` `V2Ray` proxy
-- Support `SS Surge` `SSR Url` subscription
+- Support `SS Surge` `SSR Url` `V2Ray-Vmess-File` subscription
 - `HTTP` protocol to benchmark
 
 ## Design & Work flow
@@ -141,7 +141,7 @@ Inspired by, 好吧，从
 ## 都抄了哪些功能
 
 - 支持 `SS` `SSR` `V2Ray` 三种代理类型
-- 支持 `SS Surge` `SSR Url` 两种订阅类型
+- 支持 `SS Surge` `SSR Url` `V2Ray-Vmess-File` 三种订阅类型
 - 支持 `HTTP` 跑分
 
 ## 我是怎么瞎几把设计的
