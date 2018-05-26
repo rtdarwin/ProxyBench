@@ -68,45 +68,27 @@ SSR_Proxy::populate_conf_file(const ProxyProfile& profile, int fd)
     std::string profile_str(profile_text_templ);
     std::string::size_type pos;
 
-    // Hope the flowing `replace' operations will not that slow
+// Hope the flowing `replace' operations will not that slow
 
-    pos = profile_str.find("%SERVER%");
-    profile_str.replace(pos, strlen("%SERVER%"),
-                        boost::any_cast<std::string>(profile.at("server")));
+#ifdef REPLACE
+#undef REPLACE
+#endif
+#define REPLACEY(a, b)                                                         \
+    do {                                                                       \
+        pos = profile_str.find(a);                                             \
+        profile_str.replace(pos, strlen(a),                                    \
+                            boost::any_cast<std::string>(profile.at(b)));      \
+    } while (0)
 
-    pos = profile_str.find("%SERVER_PORT%");
-    profile_str.replace(
-        pos, strlen("%SERVER_PORT%"),
-        boost::any_cast<std::string>(profile.at("server_port")));
-
-    pos = profile_str.find("%LOCAL_PORT%");
-    profile_str.replace(pos, strlen("%LOCAL_PORT%"),
-                        boost::any_cast<std::string>(profile.at("local_port")));
-
-    pos = profile_str.find("%PASSWORD%");
-    profile_str.replace(pos, strlen("%PASSWORD%"),
-                        boost::any_cast<std::string>(profile.at("password")));
-
-    pos = profile_str.find("%METHOD%");
-    profile_str.replace(pos, strlen("%METHOD%"),
-                        boost::any_cast<std::string>(profile.at("method")));
-
-    pos = profile_str.find("%PROTOCOL%");
-    profile_str.replace(pos, strlen("%PROTOCOL%"),
-                        boost::any_cast<std::string>(profile.at("protocol")));
-
-    pos = profile_str.find("%PROTOCOL_PARAM%");
-    profile_str.replace(
-        pos, strlen("%PROTOCOL_PARAM%"),
-        boost::any_cast<std::string>(profile.at("protocol_param")));
-
-    pos = profile_str.find("%OBFS%");
-    profile_str.replace(pos, strlen("%OBFS%"),
-                        boost::any_cast<std::string>(profile.at("obfs")));
-
-    pos = profile_str.find("%OBFS_PARAM%");
-    profile_str.replace(pos, strlen("%OBFS_PARAM%"),
-                        boost::any_cast<std::string>(profile.at("obfs_param")));
+    REPLACEY("%SERVER%", "server");
+    REPLACEY("%SERVER_PORT%", "server_port");
+    REPLACEY("%LOCAL_PORT%", "local_port");
+    REPLACEY("%PASSWORD%", "password");
+    REPLACEY("%METHOD%", "method");
+    REPLACEY("%PROTOCOL%", "protocol");
+    REPLACEY("%PROTOCOL_PARAM%", "protocol_param");
+    REPLACEY("%OBFS%", "obfs");
+    REPLACEY("%OBFS_PARAM%", "obfs_param");
 
     write(fd, profile_str.c_str(), profile_str.length());
 }

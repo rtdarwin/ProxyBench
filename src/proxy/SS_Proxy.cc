@@ -82,7 +82,7 @@ SS_Proxy::dump_config_file(const std::string& dir)
 // emmm, std::function may be a better choice
 #ifdef DUMP_CONFIG_FILE_HELPER
 #undef DUMP_CONFIG_FILE_HELPER
-#else
+#endif
 #define DUMP_CONFIG_FILE_HELPER(port, file_postfix)                            \
     do {                                                                       \
         ProxyProfile profile_ = _profile;                                      \
@@ -103,7 +103,6 @@ SS_Proxy::dump_config_file(const std::string& dir)
         populate_conf_file(profile_, fd);                                      \
         close(fd);                                                             \
     } while (0)
-#endif
 
     DUMP_CONFIG_FILE_HELPER(1080, _local.json);
     DUMP_CONFIG_FILE_HELPER(1081, _redir.json);
@@ -115,28 +114,23 @@ SS_Proxy::populate_conf_file(const ProxyProfile& profile, int fd)
     std::string profile_str(profile_text_templ);
     std::string::size_type pos;
 
-    // Hope the flowing `replace' operations will not that slow
+// Hope the flowing `replace' operations will not that slow
 
-    pos = profile_str.find("%SERVER%");
-    profile_str.replace(pos, strlen("%SERVER%"),
-                        boost::any_cast<std::string>(profile.at("server")));
+#ifdef REPLACE
+#undef REPLACE
+#endif
+#define REPLACEY(a, b)                                                         \
+    do {                                                                       \
+        pos = profile_str.find(a);                                             \
+        profile_str.replace(pos, strlen(a),                                    \
+                            boost::any_cast<std::string>(profile.at(b)));      \
+    } while (0)
 
-    pos = profile_str.find("%SERVER_PORT%");
-    profile_str.replace(
-        pos, strlen("%SERVER_PORT%"),
-        boost::any_cast<std::string>(profile.at("server_port")));
-
-    pos = profile_str.find("%LOCAL_PORT%");
-    profile_str.replace(pos, strlen("%LOCAL_PORT%"),
-                        boost::any_cast<std::string>(profile.at("local_port")));
-
-    pos = profile_str.find("%PASSWORD%");
-    profile_str.replace(pos, strlen("%PASSWORD%"),
-                        boost::any_cast<std::string>(profile.at("password")));
-
-    pos = profile_str.find("%METHOD%");
-    profile_str.replace(pos, strlen("%METHOD%"),
-                        boost::any_cast<std::string>(profile.at("method")));
+    REPLACEY("%SERVER%", "server");
+    REPLACEY("%SERVER_PORT%", "server_port");
+    REPLACEY("%LOCAL_PORT%", "local_port");
+    REPLACEY("%PASSWORD%", "password");
+    REPLACEY("%METHOD%", "method");
 
     pos = profile_str.find(",%SIMPLE_OBFS%");
     if (profile.count("plugin_option")) {
