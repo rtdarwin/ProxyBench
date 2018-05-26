@@ -17,7 +17,7 @@ const char* profile_text_templ = R"raw(
   "inbound": {
     "port": %LOCAL_PORT%,
     "protocol": "socks",
-    "domainOverride": ["tls","http"],
+    // "domainOverride": ["tls","http"],
     "settings": {
       "auth": "noauth"
     }
