@@ -98,7 +98,7 @@ ProxyBench::run()
             {
                 for (const auto& pinger : pingers) {
                     pinger
-                        ->socks5_proxy("socks5://127.0.0.1:" +
+                        ->socks5_proxy("socks5h://127.0.0.1:" +
                                        std::to_string(curr_port))
                         .wait_ping(&result);
                 }

@@ -12,29 +12,21 @@ std::regex NUMBERICHOST_PATTERN("^[[:digit:].]+$");
 std::string
 SyncDnsResolver::resolve(const std::string& host)
 {
-    {
-        std::smatch backrefs;
-        if (std::regex_match(host, backrefs, NUMBERICHOST_PATTERN)) {
-            return host;
-        }
-    }
-
-    struct addrinfo hints;
     struct addrinfo* answer = nullptr;
     char addrp[INET6_ADDRSTRLEN + 1] = { 0 };
 
-    bzero(&hints, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET;
-
-    if (getaddrinfo(host.c_str(), nullptr, &hints, &answer) ||
+    if (getaddrinfo(host.c_str(), nullptr, nullptr, &answer) ||
         answer == nullptr) {
         freeaddrinfo(answer);
         throw std::runtime_error("DNS lookup for " + host + " failed.");
     }
 
-    inet_ntop(answer->ai_family,
-              &(((struct sockaddr_in*)(answer->ai_addr))->sin_addr), addrp,
-              INET_ADDRSTRLEN);
+    void* addr =
+        (answer->ai_addr)->sa_family == AF_INET
+            ? (void*)&((struct sockaddr_in*)(answer->ai_addr))->sin_addr
+            : (void*)&((struct sockaddr_in6*)(answer->ai_addr))->sin6_addr;
+
+    inet_ntop(answer->ai_family, addr, addrp, INET6_ADDRSTRLEN);
 
     freeaddrinfo(answer);
 

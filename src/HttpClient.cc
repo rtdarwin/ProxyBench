@@ -61,7 +61,6 @@ HttpClient::socks5_proxy(const std::string& proxy_addr)
 {
     CURL* curlhandle = _pImpl->curlhandle;
 
-    curl_easy_setopt(curlhandle, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
     curl_easy_setopt(curlhandle, CURLOPT_PROXY, proxy_addr.c_str());
 
     return *this;
@@ -103,7 +102,7 @@ HttpClient::wait_get(const std::string& url, std::string* resultstr)
     CURL* curlhandle = _pImpl->curlhandle;
 
     curl_easy_setopt(curlhandle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curlhandle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    // curl_easy_setopt(curlhandle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
     // curl_easy_setopt(curlhandle, CURLOPT_VERBOSE, 1L); // DEBUG
 
     if (_pImpl->just_ping) {
