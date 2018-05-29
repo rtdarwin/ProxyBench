@@ -38,6 +38,7 @@ ConfReader::readConf(int argc, const char* const argv[])
     visible.add_options()
         ("help,h", "show this help")
         ("version,V", "print version string")
+        ("verbose,v", "more verbose")
         ("config,c", po::value<string>()
            , "specify configuration file")
         ("proxy,p", po::value<string>()
@@ -129,6 +130,10 @@ ConfReader::readConf(int argc, const char* const argv[])
 
     Conf* conf = Conf::get();
 
+    //
+    if (options.count("verbose")) {
+        conf->verbose += options.count("verbose");
+    }
     //
     if (options.count("proxy")) {
         const string& proxyType = options["proxy"].as<string>();

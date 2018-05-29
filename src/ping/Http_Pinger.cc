@@ -24,6 +24,10 @@ Http_Pinger::wait_ping(PingResult* result)
     HttpClient httpclient;
     httpclient.socks5_proxy(_socks5_proxy).timeout(2).just_ping(true);
 
+    if (Conf::get()->verbose) {
+        std::cout << "** HTTP Pinging..." << std::endl;
+    }
+
     int delay_accum = 0;
     int nping = Conf::get()->nping;
     int ntimeout = 0;
@@ -45,6 +49,4 @@ Http_Pinger::wait_ping(PingResult* result)
     (*result)["http_delay"] = delay;
     (*result)["http_nping"] = nping;
     (*result)["http_ntimeout"] = ntimeout;
-
-    std::cout << "** HTTP Ping finished" << std::endl; // DEBUG
 }

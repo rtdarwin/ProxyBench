@@ -5,6 +5,7 @@
 #include <regex>
 #include <sstream>
 
+#include "Conf.hh"
 #include "HttpClient.hh"
 #include "Proxy.hh"
 #include "SyncDnsResolver.hh"
@@ -31,7 +32,11 @@ SSSurge_SubscrParser::parse(const std::string& subscr_addr,
     std::string nodes_text;
     HttpClient httpclient;
 
-    std::cout << "Retrieving " << subscr_addr << "......" << std::endl; // DEBUG
+    {
+        if (Conf::get()->verbose) {
+            std::cout << "Retrieving " << subscr_addr << "......" << std::endl;
+        }
+    }
     // The fetching of surge subscription is time-consuming ...
     httpclient.timeout(60).wait_get(subscr_addr, &nodes_text);
 

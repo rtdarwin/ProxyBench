@@ -99,7 +99,11 @@ V2Ray_Proxy::wait_start()
                nullptr);
     }
 
-    std::cout << "** V2Ray_Proxy started" << std::endl; // DEBUG
+    if (Conf::get()->verbose) {
+        std::cout << "** V2Ray_Proxy  "
+                  << boost::any_cast<std::string>(_profile.at("name"))
+                  << " started" << std::endl;
+    }
 }
 
 void

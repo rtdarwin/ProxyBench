@@ -14,6 +14,7 @@ class Conf : public Singleton<Conf>
     friend class Singleton<Conf>;
 
 public:
+    int verbose;
     ProxyType proxy_type;
     std::string exec;
     std::vector<PingProtocol> protocols;

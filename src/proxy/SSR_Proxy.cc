@@ -59,7 +59,11 @@ SSR_Proxy::wait_start()
         execlp(prog.c_str(), prog.c_str(), "-c", _profile_tmpfile, nullptr);
     }
 
-    std::cout << "** SSR_Proxy started" << std::endl; // DEBUG
+    if (Conf::get()->verbose) {
+        std::cout << "** SSR_Proxy  "
+                  << boost::any_cast<std::string>(_profile.at("name"))
+                  << " started" << std::endl;
+    }
 }
 
 void

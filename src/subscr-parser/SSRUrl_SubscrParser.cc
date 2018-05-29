@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 
+#include "Conf.hh"
 #include "HttpClient.hh"
 #include "Proxy.hh"
 #include "SyncDnsResolver.hh"
@@ -36,7 +37,11 @@ SSRUrl_SubscrParser::parse(const std::string& subscr_addr,
     string nodes_base64_text;
     HttpClient httpclient;
 
-    std::cout << "Retrieving " << subscr_addr << "......" << std::endl; // DEBUG
+    {
+        if (Conf::get()->verbose) {
+            std::cout << "Retrieving " << subscr_addr << "......" << std::endl;
+        }
+    }
     // The fetching of subscription is time-consuming ...
     httpclient.timeout(60).wait_get(subscr_addr, &nodes_base64_text);
 
